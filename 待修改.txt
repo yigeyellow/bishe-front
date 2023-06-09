@@ -1,0 +1,9 @@
+后端上传文件部分，保存文件的文件名应该为mv.mp4吧，而不是用原名
+后端上传文件部分，添加videoTime()并返回
+
+前端api.js中，axios.post()和axios()用法是不一样的，直接导致后端能不能收到json数据
+前端传ajax和axios后的.then((res)=>{})只能用括号函数，不能用function(res){}，因为里面一般要使用this，如果是后者，this就不对
+
+后端中tqdm(rangexxx)要以帧数为长度，而不是文件夹
+
+后端看mp4多少帧每秒

@@ -1,0 +1,206 @@
+原视频：D:\course\bishe\code\new_video
+
+npm run serve
+1.关于结构：
+    index.html在public里
+    main.js里的new Vue({})连接了html和App.vue,注册了router和store
+        router/index.js中export default router(应该是因为这个，所以能被import)
+            且其中引入了两个vue(在其中的script部分都有export)
+        App.vue中没有引入router，应该是main.js中加的
+            App.vue中只有router放置的模板
+2.关于跨域，同源策略，重定向
+2-1.跨域请求
+跨域请求就是指：当前发起请求的域与该请求指向的资源所在的域不一样，
+凡是发送请求的url的 协议、域名、端口号三者之间任意一者与当前页面地址不同的请求。
+这里的域指的是这样的一个概念：我们认为若协议 + 域名 + 端口号均相同，那么就是同域
+http://localhost:8000/api中http是协议，localhost是域名，8000是端口号
+对于http://localhost:8080/index.html 调用 http://127.0.0.1:8080/welcom.jsp        虽然localhost等同于 127.0.0.1 但是也是非同源的
+2-2.CSRF（Cross-site request forgery）
+    中文名称：跨站请求伪造，也被称为：one click attack/session riding，缩写为：CSRF/XSRF。
+2-3.Cookie
+    服务器创建后返回给游览器cookie
+    游览器保存了我们的cookie, 就不用再登陆
+    cookie是以键值对进行表示的(key-value)，例如name=jack，这个就表示cookie的名字是name，cookie携带的值是jack
+2-4.预检请求(a preflight request)
+
+xml和ajax的区别
+跨域解决以及重定向：设置拦截器 https://blog.csdn.net/u012954706/article/details/90478217
+interceptors 拦截器
+
+
+3.关于js语法
+3-1.<%=%>是ejs模板语法，ejs模板语法是为了能够在html文件中使用js变量
+    <%= BASE_URL %>默认为/
+3-2.@ is an alias to /src,用在vue的script里的
+3-3.then()方法是异步执行
+    意思是：就是当.then()前的方法执行完后再执行then()内部的程序，
+    这样就避免了，数据没获取到等的问题
+    例子：
+    navigator.mediaDevices.getUserMedia(constrains).then(
+        function (stream) {
+            video.srcObject=stream;
+        })
+    可以理解成navigator.mediaDevices.getUserMedia(constrains) 返回一个参数stream ，
+    然后执行function功能
+    (如果用在return里的话，如果有返回值记得加在.then()里)
+
+4.跨域 + axios使用方法
+4-1.axios中文文档：http://axios-js.com/zh-cn/docs/
+4-2.跨域配置https://devpress.csdn.net/viewdesign/6401a6c2986c660f3cf90fd5.html?spm=1001.2101.3001.6650.3&utm_medium=distribute.pc_relevant.none-task-blog-2~default~CTRLIST~activity-3-87705840-blog-105311577.pc_relevant_aa2&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2~default~CTRLIST~activity-3-87705840-blog-105311577.pc_relevant_aa2&utm_relevant_index=6
+    4-2-1.配置BaseUrl
+        在main.js中加入axios.defaults.baseURL = '/api'
+        作用是我们每次发送的请求都会带一个/api的前缀
+    4-2-2.配置代理
+        在vue.config.js中进行配置代理
+        配置代理: 客户端请求服务端的数据是存在跨域问题的
+            服务器和服务器之间可以相互请求数据，是没有跨域的概念
+            配置一个代理的服务器可以请求另一个服务器中的数据
+            代理服务器再返回数据给我们的客户端
+    4-2-3.在具体使用axios的地方，修改url
+        axios.get("/movie/top250").then()
+    4-2-4.重新启动项目之后，已经解决了跨域问题
+4-3.axios涉及的文件有：
+    4-3-1.在src\api\index.js中设置了自定义的axios(不知道有什么用，也许可以不自定义)
+    4-3-2.在src\api\api.js中export了使用axios.get('/requesttest/t1/').then()的函数,
+    4-3-3.在src\views\AboutView.vue中调用了上面的函数，得到了response
+4-4.信息流request:
+    src\views\AboutView.vue调用函数
+    src\api\api.js定义了函数，连接axios.get('/requesttest/t1/')
+    (src\api\index.js自定义axios，设置拦截器)
+    (加地址)main.js添加axios.defaults.baseURL = '/api'在地址里(http://localhost:8080/api /requesttest/t1/)
+    (换地址)得到的地址经过vue.config.js中配置代理,转为地址(http://127.0.0.1:8000 /requesttest/t1/)
+
+3.4今天学了跨域代理和axios使用get(request和response)
+需要看axios能传什么，能不能传文件视频gif啥的
+能不能在gpu上跑后端
+
+3.5实现文件上传和文件下载
+文件下载: https://blog.csdn.net/weixin_46371752/article/details/123457218?spm=1001.2101.3001.6650.2&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-2-123457218-blog-115416651.pc_relevant_default&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-2-123457218-blog-115416651.pc_relevant_default&utm_relevant_index=3
+结果没实现
+
+3.6
+实现linux联网（能使用ping了）
+看看能不能在gpu上跑后端
+成功，之后看怎么传视频，感觉可以用StreamingHttpResponse
+https://blog.csdn.net/qq_42482078/article/details/123340441
+
+后端给前端传视频
+https://blog.csdn.net/Micrasoft007/article/details/109056952
+
+前端传后端
+https://clearlight.blog.csdn.net/article/details/106798675?spm=1001.2101.3001.6650.14&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-14-106798675-blog-127402103.pc_relevant_default&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7EBlogCommendFromBaidu%7ERate-14-106798675-blog-127402103.pc_relevant_default&utm_relevant_index=19
+报错：Module not found: Error: Can't resolve 'vue-resource' in 'C:\Users\86135\Desktop\vue-test\test-vue-admin\src'
+
+content-type: application/octet-stream
+https://blog.csdn.net/qq_42582773/article/details/121807555
+说人话就是，浏览器并不认得这是什么类型，也不知道应该如何展示，
+只知道这是一种二进制文件，因此遇到content-type为application/octet-stream的文件时，
+浏览器会直接把它下载下来。这个类型一般会配合另一个响应头Content-Disposition,
+该响应头指示回复的内容该以何种形式展示，
+是以内联的形式（即网页或者网页的一部分），
+还是以附件的形式下载并保存到本地。
+FormData
+    formData使用append(k,v)追加后console仍为空的问题
+    使用formData.get(k)
+    https://blog.51cto.com/u_15127549/4154195
+关于url
+    404是一种HTTP状态码,指网页或文件未找到
+    在axios里url前面不用加/api，因为会自动加，然后在访问后端时省略掉，比如/api/fileUpload/upload/，会访问后端的http://xxx:xx/api/fileUpload/upload
+    不在这里的话就要加，比如/api/api/fileUpload/upload/，会访问后端的http://xxx:xx/api/fileUpload/upload
+
+关于上传txt文件的要点：
+    不用FormData
+    后端将文件内容传给已有的路径
+    a = b'\xFE00' => a[0]=254(0xFE); a[1]=a[2]=48 (字符'0'的ASCII码)
+        b’\x’表示的时候，一定要注意\x只能是一个字节一个字节的表示
+        https://blog.csdn.net/suxiang198/article/details/77585063
+    form表单提交的几种方式 https://blog.csdn.net/weixin_46872121/article/details/118177411
+        其中说可以提交附件？？？我的咋只有内容
+引入jquery
+    就可以在js中使用$了,比如 $('button') $('#id')
+    https://www.jianshu.com/p/253f193f6afc
+
+form与formData
+    https://blog.csdn.net/weixin_46022934/article/details/121409940
+
+ajax和axios
+    ajax原理:由客户端请求ajax引擎，再由ajax引擎请求服务器，
+        服务器作出一系列响应之后返回给ajax引擎，
+        由ajax引擎决定将这个结果写入到客户端的什么位置。
+        实现页面无刷新更新数据。
+    ajax核心对象:XMLHttpRequest
+        xml是Extensible Markup Language的缩写，译为可扩展标记语言。
+        HTML（Hypertext Markup Language，超文本标记语言）
+        xml的<>中内容比html多，而html是固定的
+        https://blog.csdn.net/weixin_50260670/article/details/118553042
+    axios是通过Promise实现对ajax技术的一种封装，就像jquery对ajax的封装一样，
+    axios回来的数据是promise，
+    ajax回来的数据是回调，axios比ajax更好用更安全。
+    https://blog.csdn.net/Senora/article/details/122220983
+    想要使用ajax可以不用jqeury，这样使用的是原生ajax https://www.qycn.com/xzx/article/14847.html
+    
+    自从JavaScript库诞生之后，对JavaScript的各种方法进行了封装，
+    包括了ajax，相比于原生ajax而言，在封装后的Ajax的操作更加简洁，功能更加强大。
+　　ajax的基本使用方法为$.ajax()，其中ajax默认是使用了get方法请求，
+    并且默认以异步去请求资源。也可以通过$.get(url, [data], [callback], [type])或者
+    $.post(url, [data], [callback], [type])来改变请求方式。
+    https://www.cnblogs.com/SeanGyy/p/16032545.html
+
+vue写的是在xml还是html
+    应该不是html
+    https://blog.csdn.net/weixin_39865440/article/details/117839759
+
+promise
+    promise对象只会改变一次状态
+    这里有很多promise的例子
+    注意alart("a","b")则只会弹窗a
+    https://blog.csdn.net/qq_61643292/article/details/126961272
+3.9
+遇到的问题：在vue.config.js中有plugins会报错:应该要加在configureWebpack中而不是devServer中
+引入后能用$，然后参考https://blog.csdn.net/CloseMountain/article/details/82458620
+实现formdata传输MP4
+
+3.10
+按上面的成功了
+前端获取后端gif
+前端获取后端图片 http://events.jianshu.io/p/58d038228553
+前端使用后端下载网址下载图片且不跳转页面 https://blog.csdn.net/yunchong_zhao/article/details/121107232?utm_medium=distribute.pc_relevant.none-task-blog-2~default~baidujs_baidulandingword~default-0-121107232-blog-103233218.pc_relevant_multi_platform_whitelistv3&spm=1001.2101.3001.4242.1&utm_relevant_index=3
+使用FileResponse https://blog.csdn.net/lishuaigell/article/details/124226453
+
+3.11
+前端用a下载成功 
+后端使用StreamingHttpResponse https://blog.csdn.net/qq_43054982/article/details/108202174?spm=1001.2101.3001.6650.4&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-4-108202174-blog-124226453.pc_relevant_3mothn_strategy_and_data_recovery&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7ERate-4-108202174-blog-124226453.pc_relevant_3mothn_strategy_and_data_recovery&utm_relevant_index=7
+后端发现有问题，继续使用上面的fileresponce https://blog.csdn.net/lishuaigell/article/details/124226453
+
+3.12
+总结了上传和下载文件
+现在的问题是，无法读取浏览器下载在C盘的文件
+    Not allowed to load local resource
+以及ui界面的设计
+
+
+3.13
+另存为功能居然是在浏览器中设置的（修改下载设为为下载后询问另存为位置）
+加背景 https://huaweicloud.csdn.net/638eebf2dacf622b8df8da15.html?spm=1001.2101.3001.6650.5&utm_medium=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7Eactivity-5-107898492-blog-118330264.pc_relevant_aa2&depth_1-utm_source=distribute.pc_relevant.none-task-blog-2%7Edefault%7ECTRLIST%7Eactivity-5-107898492-blog-118330264.pc_relevant_aa2&utm_relevant_index=6
+修改gif的css实现剪切，现有问题是怎么在style中加#gif(要不要一层一层的)
+修改动图尺寸https://jingyan.baidu.com/article/ceb9fb1061864c8cad2ba0e7.html
+凌晨：
+对于动态资源css只在初次加载，而html中的style是多次加载，所以css应该全写在一个位置
+需要在电视里加上加载中动画
+
+
+vscode连接ssh（添加密钥，改密码，命令连接）
+实现linux联网（能使用ping了）（换dns，security源）
+gpu设置py37环境（换conda源）
+django搭建后端
+django跑后端项目（python算法的路径问题）
+vue界面设计（html,js,css,vue脚手架框架,像素透明图.png,css只在mount时生效？）
+前后端连接（前端axios,ajax,jquery,代理服务器跨域,formdata,a点击下载；后端httpresponce和fileresponce,和crsf啥的允许跨域请求）
+
+算法：
+网络设计（pytorch，openpose，vgg，pix2pixHD，残差网络，多尺度判别器，多层判别器）
+损失函数（GAN标准损失函数，vgg感知损失，交叉熵，范数，word公式输入，）
+
+
+最后要总结遇到的错误合集
+

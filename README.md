@@ -1,9 +1,6 @@
 # 1.这前面是作者写的readme
 ## 1-1.vue项目创建及脚手架介绍
-本项目使用Vue2框架和@vue/cli 5.0.8脚手架实现
-脚手架版本号查看如下，vue2框架在用脚手架创建项目时选择
-![image](https://github.com/yigeyellow/bishe-front/assets/61448008/4ccef5ad-f543-493c-9b6e-bb286eef173f)
-脚手架版本报错
+本项目使用Vue2框架和@vue/cli 5.0.8脚手架实现（vue2框架在用脚手架创建项目时选择）
 vue项目创建过程见[b站尚硅谷vue教程]([网址](https://www.bilibili.com/video/BV1Zy4y1K7SH/?p=61&vd_source=1ba4c2428a1b9d12a60c54de93a2d023))
 ## 1-2.项目使用介绍
 - 先下载并配置好vue和脚手架（由于vue版本在创立脚手架后才能选择，所以这里只能下载好脚手架然后看脚手架版本）
